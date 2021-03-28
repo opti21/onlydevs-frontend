@@ -89,6 +89,7 @@ export default function Home(props) {
                   width='100%'
                   height='100%'
                   muted={true}
+                  parent={["loclhost", "vercel.app"]}
                 />
               </>
             )}
