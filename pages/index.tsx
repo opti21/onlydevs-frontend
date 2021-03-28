@@ -6,7 +6,7 @@ import { useWindupString, WindupChildren } from "windups";
 import Channel from "../comps/Channel";
 import ChannelHeader from "../comps/ChannelHeader";
 import useSWR from "swr";
-const fetcher = (...args) => fetch(...args).then((res) => res.json());
+const fetcher = (url) => fetch(url).then((r) => r.json());
 
 export default function Home(props) {
   const { data, error } = useSWR("/api/team-data", fetcher, {

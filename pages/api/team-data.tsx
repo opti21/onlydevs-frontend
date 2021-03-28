@@ -46,10 +46,6 @@ const initTeam: Member[] = [
     id: 73184979,
     // username: 'simpathey',
   },
-  {
-    id: 369724,
-    // username: 'opti_21'
-  },
 ];
 
 async function getToken() {
