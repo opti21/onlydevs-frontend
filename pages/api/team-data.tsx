@@ -5,6 +5,19 @@ class Member {
   id: number;
   username?: string;
 }
+
+class TwitchUser {
+  id: string;
+  login: string;
+  type: string;
+  broadcaster_type: string;
+  description: string;
+  profile_image_url: string;
+  view_count: number;
+  created_at: string;
+  is_live: boolean;
+}
+
 const initTeam: Member[] = [
   {
     id: 167160215,
@@ -185,7 +198,7 @@ export default async (req, res) => {
 
   // console.log(streamReposnse)
 
-  let teamData: object[] = [];
+  let unsortedTeamData: TwitchUser[] = [];
 
   for (let i = 0; i < TEAM.length; i++) {
     let streamData = streamReposnse.data;
@@ -205,11 +218,23 @@ export default async (req, res) => {
       live = false;
     }
 
-    teamData.push({
+    unsortedTeamData.push({
       ...TEAM[i],
       is_live: live,
     });
   }
+
+  const teamData = unsortedTeamData.sort((a, b) => {
+    if (a.login < b.login) {
+      return -1;
+    }
+
+    if (a.login > b.login) {
+      return 1;
+    }
+
+    return 0;
+  });
 
   res.status(200).json(teamData);
 };

@@ -1,5 +1,5 @@
 export default function Channel(props) {
-  const { member, style, setChannel, setMember } = props;
+  const { member, style, setChannel, setMember, setShowMenu } = props;
 
   return (
     <div
@@ -8,6 +8,9 @@ export default function Channel(props) {
       onClick={() => {
         setChannel(member.login);
         setMember(member);
+        if (setShowMenu) {
+          setShowMenu(false);
+        }
       }}
     >
       <a href='#' className='h-full'>
