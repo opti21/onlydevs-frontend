@@ -17,7 +17,7 @@ export default function ChannelHeader(props) {
           {displayName}
         </h2>
         <div className='h-1/4 text-white md:pt-3 whitespace-normal'>
-          {description === "" ? "No description" : description}
+          {description}
         </div>
       </div>
     </div>

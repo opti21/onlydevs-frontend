@@ -85,15 +85,12 @@ export default function Home(props) {
 
           {/* Right Side */}
           <div className='chanel-content flex-1'>
-            <div className='bg-gray-700 bg-opacity-50 p-3 md:ml-4 mb-4'>
-              {member === false ? <> </> : <ChannelHeader member={member} />}
-            </div>
-            {/* Stream Embed */}
-            <div className='h-auto bg-gray-700 bg-opacity-50 p-3 md:ml-4 md:mb-4'>
-              {channel === "" ? (
-                <div className='text-white'>Please select a channel</div>
-              ) : (
-                <>
+            {member ? (
+              <>
+                <div className='bg-gray-700 bg-opacity-50 p-3 md:ml-4 mb-4'>
+                  <ChannelHeader member={member} />
+                </div>
+                <div className='h-auto bg-gray-700 bg-opacity-50 p-3 md:ml-4 md:mb-4'>
                   <TwitchEmbed
                     channel={channel}
                     theme='dark'
@@ -105,9 +102,19 @@ export default function Home(props) {
                       "onlydevs-frontend.vercel.app",
                     ]}
                   />
-                </>
-              )}
-            </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className='bg-gray-700 bg-opacity-50 p-3 md:ml-4 mb-4'>
+                  <h1 className='text-4xl font-mono'>
+                    <WindupChildren>
+                      {"Select a channel to watch"}
+                    </WindupChildren>
+                  </h1>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </body>
