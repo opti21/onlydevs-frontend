@@ -107,7 +107,7 @@ export default function Home(props) {
             ) : (
               <>
                 <div className='bg-gray-700 bg-opacity-50 p-3 md:ml-4 mb-4'>
-                  <h1 className='text-4xl font-mono'>
+                  <h1 className='text-4xl font-mono text-white'>
                     <WindupChildren>
                       {"Select a channel to watch"}
                     </WindupChildren>
