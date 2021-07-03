@@ -7,12 +7,11 @@ import Channel from "../comps/Channel";
 import ChannelHeader from "../comps/ChannelHeader";
 import useSWR from "swr";
 import MobileMenu from "../comps/MobileMenu";
-const fetcher = (url) => fetch(url).then((r) => r.json());
+import { TeamDataResponse } from "../types";
 
-export default function Home(props) {
-  const { data, error } = useSWR("/api/team-data", fetcher, {
-    initialData: props.teamData,
-  });
+export default function Home() {
+  const { data, error } = useSWR<TeamDataResponse>("/api/team-data");
+
   console.log(data);
   const [channel, setChannel] = useState("");
   const [member, setMember] = useState(false);
@@ -27,27 +26,43 @@ export default function Home(props) {
         <title>OnlyDevs</title>
       </Head>
       <body
-        className='container mx-auto max-w-6xl bg-black bg-repeat p-1 md:p-3'
+        className="container mx-auto max-w-6xl bg-black bg-repeat p-1 md:p-3"
         style={{ backgroundImage: "url(/archbtw.png)" }}
       >
         {/* Header */}
-        <div className='header text-white'>
-          <div className='pb-5'>
-            <div className='text-7xl font-mono'>{title}</div>
+        <div className="header text-white">
+          <div className="pb-5">
+            <div className="text-7xl font-mono">{title}</div>
           </div>
         </div>
         <MobileMenu data={data} setChannel={setChannel} setMember={setMember} />
-        <div className='flex mx-auto bg-none mt-6'>
+        <div className="flex mx-auto bg-none mt-6">
           {/* Side Menu */}
-          <div className='flex-col hidden md:block'>
-            <div className='side-menu w-52 h-auto flex-none overflow-y-scroll-auto bg-gray-700 bg-opacity-50 text-white font-mono  divide-y-2 divide-gray-600'>
+          <div className="flex-col hidden md:block">
+            <div className="side-menu w-52 h-auto flex-none overflow-y-scroll-auto bg-gray-700 bg-opacity-50 text-white font-mono  divide-y-2 divide-gray-600">
               {data ? (
                 <>
-                  <div className='divide-y-2 divide-gray-600'>
+                  <div id="primes-special-place">
                     {data.map((member) => {
-                      if (member.is_live) {
+                      if (member.id === "167160215") {
                         return (
                           <Channel
+                            key={69}
+                            member={member}
+                            style={member.is_live ? liveStyle : notLiveStyle}
+                            setChannel={setChannel}
+                            setMember={setMember}
+                          />
+                        );
+                      }
+                    })}
+                  </div>
+                  <div className="divide-y-2 divide-gray-600">
+                    {data.map((member, index) => {
+                      if (member.is_live && member.id != "167160215") {
+                        return (
+                          <Channel
+                            key={index + 1}
                             member={member}
                             style={liveStyle}
                             setChannel={setChannel}
@@ -57,11 +72,12 @@ export default function Home(props) {
                       }
                     })}
                   </div>
-                  <div className='divide-y-2 divide-gray-600'>
-                    {data.map((member) => {
-                      if (!member.is_live) {
+                  <div className="divide-y-2 divide-gray-600">
+                    {data.map((member, index) => {
+                      if (!member.is_live && member.id != "167160215") {
                         return (
                           <Channel
+                            key={index + 1}
                             member={member}
                             style={notLiveStyle}
                             setChannel={setChannel}
@@ -76,26 +92,26 @@ export default function Home(props) {
                 <>Loading...</>
               )}
             </div>
-            <div className='p-3'>
-              <button className='rounded-md text-white h-15 w-full bg-indigo-500 p-3 mb-4'>
-                <a href='https://discord.gg/YTe4hQGdKh'>Join our Discord</a>
+            <div className="p-3">
+              <button className="rounded-md text-white h-15 w-full bg-indigo-500 p-3 mb-4">
+                <a href="https://discord.gg/YTe4hQGdKh">Join our Discord</a>
               </button>
             </div>
           </div>
 
           {/* Right Side */}
-          <div className='chanel-content flex-1'>
+          <div className="chanel-content flex-1">
             {member ? (
               <>
-                <div className='bg-gray-700 bg-opacity-50 p-3 md:ml-4 mb-4'>
+                <div className="bg-gray-700 bg-opacity-50 p-3 md:ml-4 mb-4">
                   <ChannelHeader member={member} />
                 </div>
-                <div className='h-auto bg-gray-700 bg-opacity-50 p-3 md:ml-4 md:mb-4'>
+                <div className="h-auto bg-gray-700 bg-opacity-50 p-3 md:ml-4 md:mb-4">
                   <TwitchEmbed
                     channel={channel}
-                    theme='dark'
-                    width='100%'
-                    height='600px'
+                    theme="dark"
+                    width="100%"
+                    height="600px"
                     parent={[
                       "onlydevs.tv",
                       "localhost",
@@ -106,8 +122,8 @@ export default function Home(props) {
               </>
             ) : (
               <>
-                <div className='bg-gray-700 bg-opacity-50 p-3 md:ml-4 mb-4'>
-                  <h1 className='text-4xl font-mono text-white'>
+                <div className="bg-gray-700 bg-opacity-50 p-3 md:ml-4 mb-4">
+                  <h1 className="text-4xl font-mono text-white">
                     <WindupChildren>
                       {"Select a channel to watch"}
                     </WindupChildren>

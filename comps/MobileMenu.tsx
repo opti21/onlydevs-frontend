@@ -15,25 +15,26 @@ export default function MobileMenu(props) {
 
   return (
     <>
-      <div className='mobile-menu md:hidden'>
-        <button className='rounded-md text-white w-full bg-indigo-500 p-2 mb-4'>
-          <a href='https://discord.gg/YTe4hQGdKh'>Join our Discord</a>
+      <div className="mobile-menu md:hidden">
+        <button className="rounded-md text-white w-full bg-indigo-500 p-2 mb-4">
+          <a href="https://discord.gg/YTe4hQGdKh">Join our Discord</a>
         </button>
         <button
           onClick={toggleMenu}
-          className='bg-white w-full rounded-md p-2 mb-3'
+          className="bg-white w-full rounded-md p-2 mb-3"
         >
           Channel Menu
         </button>
         {showMenu ? (
-          <div className='w-full h-auto flex-none overflow-y-scroll-auto bg-gray-700 bg-opacity-50 text-white font-mono  divide-y-2 divide-gray-600'>
+          <div className="w-full h-auto flex-none overflow-y-scroll-auto bg-gray-700 bg-opacity-50 text-white font-mono  divide-y-2 divide-gray-600">
             {data ? (
               <>
-                <div className='divide-y-2 divide-gray-600'>
-                  {data.map((member) => {
+                <div className="divide-y-2 divide-gray-600">
+                  {data.map((member, index) => {
                     if (member.is_live) {
                       return (
                         <Channel
+                          key={index + 1}
                           member={member}
                           style={liveStyle}
                           setChannel={setChannel}
@@ -44,11 +45,12 @@ export default function MobileMenu(props) {
                     }
                   })}
                 </div>
-                <div className='divide-y-2 divide-gray-600'>
-                  {data.map((member) => {
+                <div className="divide-y-2 divide-gray-600">
+                  {data.map((member, index) => {
                     if (!member.is_live) {
                       return (
                         <Channel
+                          key={index + 1}
                           member={member}
                           style={notLiveStyle}
                           setChannel={setChannel}

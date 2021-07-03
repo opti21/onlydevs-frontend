@@ -1,22 +1,6 @@
 import { connectToDatabase } from "../../util/mongodb_backend";
 import dayjs from "dayjs";
-
-class Member {
-  id: number;
-  username?: string;
-}
-
-class TwitchUser {
-  id: string;
-  login: string;
-  type: string;
-  broadcaster_type: string;
-  description: string;
-  profile_image_url: string;
-  view_count: number;
-  created_at: string;
-  is_live: boolean;
-}
+import { Member, TwitchUser } from "../../types";
 
 const initTeam: Member[] = [
   {
@@ -67,7 +51,7 @@ async function getToken() {
   const currentToken = await db.collection("twitch creds").find().toArray();
 
   if (currentToken.length > 0) {
-    const tokenExpired = dayjs().isAfter(dayjs(currentToken.expire_date));
+    const tokenExpired = dayjs().isAfter(dayjs(currentToken[0].expire_date));
     if (tokenExpired) {
       console.log("Token expired, fetching new token");
       const newTokenResponse = await fetch(
@@ -82,7 +66,7 @@ async function getToken() {
       // Delete old token document
       await db
         .collection("twitch creds")
-        .findOneAndDelete({ _id: currentToken._id })
+        .findOneAndDelete({ _id: currentToken[0]._id })
         .then((res) => {
           console.log("Old token deleted");
         })
@@ -141,6 +125,23 @@ async function getToken() {
 
 export default async (req, res) => {
   let twitchToken = await getToken();
+
+  const teamReposnse = await fetch(
+    `https://api.twitch.tv/helix/teams?name=onlydevs`,
+    {
+      headers: {
+        Authorization: "Bearer " + twitchToken.access_token,
+        "Client-ID": process.env.TWITCH_CLIENT,
+      },
+    }
+  )
+    .then((response) => {
+      return response.json();
+    })
+    .catch((err) => {
+      res.status(500).json(err);
+    });
+  console.log(teamReposnse);
 
   let userQuery = "";
 
@@ -235,6 +236,7 @@ export default async (req, res) => {
 
     return 0;
   });
+  // console.log(teamData);
 
   res.status(200).json(teamData);
 };
