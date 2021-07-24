@@ -1,6 +1,6 @@
 import { GetStaticProps } from "next";
 import Head from "next/head";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { TwitchEmbed } from "react-twitch-embed";
 import { useWindupString, WindupChildren } from "windups";
 import Channel from "../comps/Channel";
@@ -9,10 +9,37 @@ import useSWR from "swr";
 import MobileMenu from "../comps/MobileMenu";
 import { TeamDataResponse } from "../types";
 
+const useMediaQuery = (width) => {
+  const [targetReached, setTargetReached] = useState(false);
+
+  const updateTarget = useCallback((e) => {
+    if (e.matches) {
+      setTargetReached(true);
+    } else {
+      setTargetReached(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    const media = window.matchMedia(`(max-width: ${width}px)`);
+    media.addEventListener("change", (e) => updateTarget(e));
+
+    // Check on mount (callback is not called until a change occurs)
+    if (media.matches) {
+      setTargetReached(true);
+    }
+
+    return () => media.removeEventListener("change", (e) => updateTarget(e));
+  }, []);
+
+  return targetReached;
+};
+
 export default function Home() {
   const { data, error } = useSWR<TeamDataResponse>("/api/team-data");
+  const isBreakpoint = useMediaQuery(720);
 
-  console.log(data);
+  // console.log(data);
   const [channel, setChannel] = useState("");
   const [member, setMember] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
@@ -111,7 +138,7 @@ export default function Home() {
                     channel={channel}
                     theme="dark"
                     width="100%"
-                    height="600px"
+                    height={isBreakpoint ? "625px" : "800px"}
                     parent={[
                       "onlydevs.tv",
                       "localhost",
