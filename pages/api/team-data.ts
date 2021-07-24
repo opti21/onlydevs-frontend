@@ -2,46 +2,50 @@ import { connectToDatabase } from "../../util/mongodb_backend";
 import dayjs from "dayjs";
 import { Member, TwitchUser } from "../../types";
 
-const initTeam: Member[] = [
+const teamUsersFallback: Member[] = [
   {
-    id: 167160215,
+    user_id: 167160215,
     // username: 'theprimeagen',
   },
   {
-    id: 509382535,
+    user_id: 509382535,
     // username: 'melkeydev',
   },
   {
-    id: 424038378,
+    user_id: 424038378,
     // username: 'beginbot',
   },
   {
-    id: 192497221,
+    user_id: 192497221,
     // username: 'erikdotdev',
   },
   {
-    id: 32985385,
+    user_id: 32985385,
     // username: 'roxkstar74',
   },
   {
-    id: 114257969,
+    user_id: 114257969,
     // username: 'teej_dv',
   },
   {
-    id: 278217731,
+    user_id: 278217731,
     // username: 'mastermndio',
   },
   {
-    id: 264030156,
+    user_id: 264030156,
     // username: 'thealtf4stream',
   },
   {
-    id: 43065048,
+    user_id: 43065048,
     // username: 'bun9000',
   },
   {
-    id: 73184979,
+    user_id: 73184979,
     // username: 'simpathey',
+  },
+  {
+    user_id: 476845395,
+    // username: 'bashbunni'
   },
 ];
 
@@ -125,8 +129,9 @@ async function getToken() {
 
 export default async (req, res) => {
   let twitchToken = await getToken();
+  let teamUsers;
 
-  const teamReposnse = await fetch(
+  const teamResponse = await fetch(
     `https://api.twitch.tv/helix/teams?name=onlydevs`,
     {
       headers: {
@@ -138,18 +143,23 @@ export default async (req, res) => {
     .then((response) => {
       return response.json();
     })
+    .then((data) => {
+      console.log("Using api data");
+      teamUsers = data.data[0].users;
+    })
     .catch((err) => {
-      res.status(500).json(err);
+      console.log("using fallback");
+      teamUsers = teamUsersFallback;
+      console.error(err);
     });
-  console.log(teamReposnse);
 
   let userQuery = "";
 
-  for (let i = 0; i < initTeam.length; i++) {
+  for (let i = 0; i < teamUsers.length; i++) {
     if (i === 0) {
-      userQuery += `?id=${initTeam[i].id}`;
+      userQuery += `?id=${teamUsers[i].user_id}`;
     } else {
-      userQuery += `&id=${initTeam[i].id}`;
+      userQuery += `&id=${teamUsers[i].user_id}`;
     }
   }
 
@@ -173,11 +183,11 @@ export default async (req, res) => {
 
   let streamQuery = "";
 
-  for (let i = 0; i < initTeam.length; i++) {
+  for (let i = 0; i < teamUsers.length; i++) {
     if (i === 0) {
-      streamQuery += `?user_id=${initTeam[i].id}`;
+      streamQuery += `?user_id=${teamUsers[i].user_id}`;
     } else {
-      streamQuery += `&user_id=${initTeam[i].id}`;
+      streamQuery += `&user_id=${teamUsers[i].user_id}`;
     }
   }
 
